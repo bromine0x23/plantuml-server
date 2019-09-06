@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<html
-	lang="zh-CN"
-	xmlns:th="http://www.thymeleaf.org"
-	th:with="context=${#request.scheme} + '://' + ${#request.serverName} + ':' + ${#request.serverPort} + ${#request.contextPath}"
->
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -50,7 +46,7 @@
 			<div class="form-group">
 				<label for="url">You can enter here a previously generated URL:</label>
 				<input id="url" class="form-control" name="url" type="text" size="150"
-					   th:value="${context} + '/png/' + ${encodedSource}"/>
+					   th:value="${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromContextPath(#request).path('/png/{source}').build(encodedSource)}"/>
 			</div>
 			<input type="submit" class="btn btn-primary"/>
 		</form>
@@ -69,7 +65,7 @@
 		</div>
 		<div class="row text-center">
 			<div class="col">
-				<img class="img-fluid img-thumbnail" th:src="@{'/png/' + ${encodedSource}}" alt="PlantUML diagram"/>
+				<img class="img-fluid img-thumbnail" th:src="@{/png/{encodedSource}(encodedSource=${encodedSource})}" alt="PlantUML diagram"/>
 			</div>
 		</div>
 	</section>
