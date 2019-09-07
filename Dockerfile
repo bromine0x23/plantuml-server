@@ -1,4 +1,7 @@
-FROM maven:3-jdk-11 as builder
+ARG BUILDER_IMAGE=maven:3-jdk-11
+ARG RUNNER_IMAGE=adoptopenjdk/openjdk11:jre
+
+FROM $BUILDER_IMAGE as builder
 
 WORKDIR /workspace
 
@@ -11,8 +14,7 @@ RUN mvn --batch-mode \
         clean package
 
 
-
-FROM adoptopenjdk/openjdk11:jre as runner
+FROM $RUNNER_IMAGE as runner
 
 LABEL \
   org.label-schema.schema-version="1.0" \
