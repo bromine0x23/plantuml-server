@@ -1,4 +1,4 @@
-logging:
-  level:
-    root: info
-    cn.bromine0x23.plantuml: debug
+spring:
+  profiles:
+    active:
+    - development

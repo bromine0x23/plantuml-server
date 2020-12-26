@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="editor/layout :: head">
+</head>
+<body>
+<div class="container-fluid">
+	<header th:replace="editor/layout :: header">
+	</header>
+
+	<div class="row">
+		<section class="col">
+			<form th:replace="editor/layout :: workspace (source=${source}, encodedSource=${encodedSource})">
+			</form>
+		</section>
+
+		<div class="col">
+			<section th:replace="editor/layout :: render (encodedSource=${encodedSource})">
+			</section>
+		</div>
+	</div>
+
+	<hr class="my-1"/>
+
+	<section class="col" >
+		<form th:replace="editor/layout :: url (encodedSource=${encodedSource})">
+		</form>
+	</section>
+
+	<hr class="my-1"/>
+
+	<footer th:replace="editor/layout :: footer">
+	</footer>
+</div>
+<script th:replace="editor/layout :: script">
+</script>
+</body>
+</html>

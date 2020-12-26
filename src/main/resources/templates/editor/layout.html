@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>PlantUML Server</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/webjars/codemirror/lib/codemirror.css}"/>
+	<link rel="stylesheet" th:href="@{/webjars/codemirror/theme/darcula.css}"/>
+	<link rel="stylesheet" th:href="@{/webjars/codemirror/theme/solarized.css}"/>
+	<style>
+		#form-group-source {
+			min-height: 500px;
+		}
+		.CodeMirror {
+			border: 1px solid #eee;
+			height: auto;
+		}
+	</style>
+	<script th:src="@{/webjars/codemirror/lib/codemirror.js}"></script>
+</head>
+<body>
+<div>
+	<header  th:fragment="header" class="text-center">
+		<h1>PlantUML Server</h1>
+		<p class="lead">Create your <a href="http://plantuml.com">PlantUML</a> diagrams directly in your browser !</p>
+	</header>
+
+	<form id="workspace" th:fragment="workspace (source, encodedSource)" class="form" method="post" accept-charset="UTF-8" th:action="@{/uml}">
+		<div id="form-group-source" class="form-group">
+			<label class="sr-only" for="source">Workspace</label>
+			<textarea id="source" class="form-control" rows="20" name="source" th:text="${source}"></textarea>
+		</div>
+		<div class="form-row">
+			<div class="form-group">
+				<div class="input-group input-group-sm">
+					<div class="input-group-prepend">
+						<label class="input-group-text" for="theme">Theme</label>
+					</div>
+					<select id="theme" class="custom-select" onchange="Editor.changeTheme()">
+						<option selected>default</option>
+						<option>darcula</option>
+						<option>solarized dark</option>
+						<option>solarized light</option>
+					</select>
+				</div>
+			</div>
+			<div class="col">
+				<a class="btn btn-sm btn-outline-primary" target="_blank" th:href="@{/png/{encodedSource}(encodedSource=${encodedSource})}">View as PNG</a>
+				<a class="btn btn-sm btn-outline-primary" target="_blank" th:href="@{/svg/{encodedSource}(encodedSource=${encodedSource})}">View as SVG</a>
+				<a class="btn btn-sm btn-outline-primary" target="_blank" th:href="@{/txt/{encodedSource}(encodedSource=${encodedSource})}">View as ASCII Art</a>
+				<input type="submit" class="btn btn-sm btn-primary"/>
+			</div>
+		</div>
+	</form>
+
+	<section th:fragment="render (encodedSource)">
+		<div class="row text-center">
+			<div class="col">
+				<img class="img-fluid img-thumbnail" th:src="@{/png/{encodedSource}(encodedSource=${encodedSource})}" alt="PlantUML diagram"/>
+			</div>
+		</div>
+	</section>
+
+	<form th:fragment="url (encodedSource)" class="form" method="post" accept-charset="UTF-8" th:action="@{/uml/recover}">
+		<div class="form-group">
+			<label class="mb-sm-0" for="url"><small>You can enter here a previously generated URL:</small></label>
+			<div class="input-group input-group-sm">
+				<input id="url" class="form-control text-monospace" name="url" type="text" size="150" th:value="${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromContextPath(#request).path('/png/{source}').build(encodedSource)}"/>
+				<div class="input-group-append">
+					<button type="submit" class="btn btn-primary">Recover</button>
+					<button type="button" class="btn btn-success" onclick="Editor.copyUrl()">Copy</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<footer class="text-muted text-center" th:fragment="footer">
+		<small th:text="${T(net.sourceforge.plantuml.version.Version).fullDescription()}"></small>
+	</footer>
+</div>
+
+<script th:fragment="script">
+	let Editor = (function () {
+		"use strict";
+		let codeMirror = CodeMirror.fromTextArea(document.getElementById('source'), {
+			lineNumbers: true,
+			styleActiveLine: true,
+			viewportMargin: Infinity
+		});
+		return {
+			changeTheme: function() {
+				let input = document.getElementById('theme');
+				let theme = input.options[input.selectedIndex].textContent;
+				codeMirror.setOption('theme', theme);
+				localStorage.setItem('theme', theme);
+			},
+			copyUrl: function() {
+				let url = document.querySelector("#url");
+				url.select();
+				document.execCommand("copy");
+			}
+		}
+	})();
+</script>
+</body>
+</html>
