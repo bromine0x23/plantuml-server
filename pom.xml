@@ -21,7 +21,7 @@
 	<properties>
 		<java.version>11</java.version>
 
-		<plantuml.version>1.2021.3</plantuml.version>
+		<plantuml.version>1.2023.9</plantuml.version>
 
 		<batik.version>1.14</batik.version>
 		<fop.version>2.6</fop.version>
